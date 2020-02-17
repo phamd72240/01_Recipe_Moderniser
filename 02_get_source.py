@@ -21,7 +21,9 @@ def not_blank(question, error_msg, num_ok):
                     break
 
         if response == "":
+            print(error)
             continue
+
         elif has_errors != "":
             print(error)
             break
