@@ -105,9 +105,91 @@ def get_all_ingredients():
 
     return all_ingredients
 
+# ***** Functions go here *****
+def general_converter(how_much, lookup, dictionary, conversion_factor):
+
+    if lookup in dictionary:
+        mult_by = dictionary.get(lookup)
+        how_much = how_much * float(mult_by) / conversion_factor
+        converted = "yes"
+
+    else:
+        converted = "no"
+
+    return [how_much, converted]
+
+def unit_checker(raw_unit):
+
+    unit_tocheck = raw_unit
+
+    # Abbreviated lists
+    teaspoon = ["tsp", "teaspoon", "t"]
+    tablespoon = ["tbs", "tablespoon", "T", "tbsp"]
+    ounce = ["oz", "ounce", "fl oz", "ounces"]
+    cup = ["c", "cup", "cups"]
+    pint = ["p", "pt", "fl pt", "pint", "pints"]
+    quart = ["q", "qt", "fl qt", "quart", "quarts"]
+    mls = ["ml", "milliliter", "millilitre", "milliliters", "millilitres"]
+    litre = ["litre", "liter", "l", "litres", "liters"]
+    pound = ["pound", "lb", "#", "pounds"]
+    grams = ["g", "gram", "grams"]
+
+    if unit_tocheck == "":
+    # print("you chose {}".format(unit_tocheck))
+        return unit_tocheck
+    elif unit_tocheck.lower() in grams:
+        return "g"
+    elif unit_tocheck == "T" or unit_tocheck.lower() in tablespoon:
+        return "tbs"
+    elif unit_tocheck.lower() in teaspoon:
+        return "tsp"
+    elif unit_tocheck.lower() in ounce:
+        return "ounce"
+    elif unit_tocheck.lower() in cup:
+        return "cup"
+    elif unit_tocheck.lower() in pint:
+        return "pint"
+    elif unit_tocheck.lower() in quart:
+        return "quart"
+    elif unit_tocheck.lower() in mls:
+        return "ml"
+    elif unit_tocheck.lower() in litre:
+        return "litre"
+    elif unit_tocheck.lower() in pound:
+        return "pound"
+
 # ***** Main Routine ******
 
 # set up Dictionaries
+unit_central = {
+    "tsp": 5,
+    "tbs": 15,
+    "cup": 237,
+    "ounce": 28.35,
+    "pint": 473,
+    "quart": 946,
+    "pound": 454,
+    "litre": 1000,
+    "ml": 1
+}
+
+# *** Generate food dictionary *****
+# open file
+groceries = open('01_ingredients_ml_to_g.csv')
+
+# Read data into a list
+csv_groceries = csv.reader(groceries)
+
+# Create a dictionary to hold the data
+food_dictionary = {}
+
+# Add the data from the list into the dictionary
+# (first item in row is key, next is definition)
+
+for row in csv_groceries:
+    food_dictionary[row[0]] = row[1]
+
+#print(food_dictionary)
 
 # set up list to hold 'modernised' ingredients
 modernised_recipe = []
@@ -129,7 +211,6 @@ full_recipe = get_all_ingredients()
 
 # Split each line of the recipe into amount, unit and ingredient...
 mixed_regrex = "\d{1,3}\s\d{1,3}\/\d{1,3}"
-convert = "yes"
 
 for recipe_line in full_recipe:
     recipe_line = recipe_line.strip()
@@ -145,6 +226,7 @@ for recipe_line in full_recipe:
         amount = mixed_num.replace("", "+")
         # Change the string into a decimal
         amount = eval(amount)
+        amount = amount * scale_factor
 
         # Get unit and ingredient...
         compile_regrex = re.compile(mixed_regrex)
@@ -156,9 +238,11 @@ for recipe_line in full_recipe:
 
         try:
             amount = eval(get_amount[0])   # convert amount to float if possible
+            amount = amount * scale_factor
         except NameError:
             amount = get_amount[0]
-            convert = "no"
+            modernised_recipe.append(recipe_line)
+            continue
 
         unit_ingredient = get_amount[1]
 
@@ -168,12 +252,18 @@ for recipe_line in full_recipe:
     unit = get_unit[0]
     # convert into ml
 
-    ingredient = get_unit[1]
-    # convert into g
+    num_spaces = recipe_line.count(" ")
+    if num_spaces > 1:
+        ingredient = get_unit[1]
+        # convert into g
+    else:
+        modernised_recipe.append("{} {}".format(amount, unit_ingredient))
+        continue
 
-    print("{} {} {}".format(amount, unit, ingredient))
-
+    modernised_recipe.append("{} {} {}".format(amount, unit, ingredient))
 
 # Put updated ingredient in list
 
 # Output ingredient list
+for item in modernised_recipe:
+    print(item)
