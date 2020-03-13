@@ -20,8 +20,8 @@ def unit_checker():
     unit_tocheck = input("Unit? ")
 
     # Abbreviated lists
-    teaspoon = ["tsp", "teaspoon", "t"]
-    tablespoon = ["tbs", "tablespoon", "T", "tbsp"]
+    teaspoon = ["tsp", "teaspoon", "t", "teaspoons"]
+    tablespoon = ["tbs", "tablespoon", "T", "tbsp", "tablespoons"]
     ounce = ["oz", "ounce", "fl oz", "ounces"]
     cup = ["c", "cup", "cups"]
     pint = ["p", "pt", "fl pt", "pint", "pints"]
