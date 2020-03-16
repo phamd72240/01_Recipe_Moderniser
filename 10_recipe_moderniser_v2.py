@@ -66,7 +66,7 @@ def get_sf():
                              "and you might struggle to accurately weigh "
                              "the ingredients. \n"
                              "Do you want to fix this and make more servings? ").lower()
-        elif scale_factor > 4:
+        elif sf > 4:
             dodgy_sf = input("Warning: This scale factor is quite large - you might"
                              "have issues with mixing bowl space and oven space.\n"
                              "Do you want to fix this and make a smaller batch? ").lower()
@@ -85,7 +85,7 @@ def get_all_ingredients():
           "you are done.")
     while stop != "xxx":
         # Ask user for ingredient (via not blank function)
-        get_ingredient = not_blank("Please type in an ingredient name: "
+        get_ingredient = not_blank("Please type in an ingredient name: ",
                                    "This can't be blank",
                                    "yes")
 
